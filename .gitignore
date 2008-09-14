@@ -1,0 +1,8 @@
+*.o
+*.hex
+*.elf
+*.lss
+*.swp
+HttpD._c
+README.txt
+Session.vim
