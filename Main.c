@@ -5,6 +5,10 @@
  * Author: Simon Kueppers
  * Email: simon.kueppers@web.de
  * Homepage: http://klinkerstein.m-faq.de
+ *
+ *
+ * Additions for the connected LED-Matrix-Display
+ * made by Bjoern Biesenbach 
  * */
 
 #include <avr/io.h>
@@ -110,7 +114,9 @@ int main()
 				g_nPrescaler = 100;
 			}
 		}
-	
+		
+		/* Comment this out and your led-matrix will go up in flames */
+
 		led_runner();
 	}
 

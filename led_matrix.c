@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2008 Bjoern Biesenbach <bjoern@bjoern-b.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>
@@ -22,6 +41,9 @@
 #define LED_BRTWRT PC5
 #define LED_BRTCLK PC6
 
+/* Arrays für Rot und Gruen
+ * Ein uint16_t pro Zeile pro Modul
+ */
 uint16_t MODULE_RED[4][16];
 uint16_t MODULE_GREEN[4][16];
 
@@ -48,6 +70,7 @@ void output_on_module(uint8_t module)
 			LED_CONTROL_PORT |= (1<<LED_CLOCK);
 			LED_CONTROL_PORT &= ~(1<<LED_CLOCK);
 		}
+		LED_CONTROL_PORT |= (1<<LED_BRIGHT);
 		LED_CONTROL_PORT &= ~(1<<LED_BRIGHT);
 //		_delay_us(100);
 	}
@@ -56,7 +79,9 @@ void output_on_module(uint8_t module)
 
 void led_init(void)
 {
+	/* Array initialisieren */
 	memset(&MODULE_RED,0,sizeof(MODULE_RED));
+	memset(&MODULE_RED,0,sizeof(MODULE_GREEN));
 
 	LED_SELECT_DDRD |= (1<<LED_SELECT_1) | 
 		(1<<LED_SELECT_2) | 

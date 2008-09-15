@@ -28,6 +28,7 @@
 void uip_TcpAppHubInit(void)
 {
 	HttpDInit();
+	LMSInit();
 	//FtpDInit(); 
 	//...
 }
@@ -38,6 +39,10 @@ void uip_TcpAppHubCall(void)
 	{
 		case (HTONS(PORT_HTTPD)):
 			HttpDCall(uip_appdata, uip_datalen(), &uip_conn->appstate.HttpDSocket);
+		break;
+
+		case (HTONS(PORT_LMS)):
+		        LMSCall(uip_appdata,uip_datalen(), &uip_conn->appstate.LMSSocket);
 		break;
 		
 		//case (HTONS(PORT_FTPD)):

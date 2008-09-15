@@ -34,7 +34,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = Enc28j60.o Spi.o HttpD.o uip.o uip_arp.o uip_TcpAppHub.o uip_UdpAppHub.o Main.o Gpio.o led_matrix.o
+OBJECTS = Enc28j60.o Spi.o HttpD.o uip.o uip_arp.o uip_TcpAppHub.o uip_UdpAppHub.o Main.o Gpio.o led_matrix.o lms.o
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -71,6 +71,9 @@ Gpio.o: ./Hardware/Gpio.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 led_matrix.o: led_matrix.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+lms.o: ./Net/TcpApps/lms.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
