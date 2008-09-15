@@ -44,37 +44,50 @@
 /* Arrays für Rot und Gruen
  * Ein uint16_t pro Zeile pro Modul
  */
-uint16_t MODULE_RED[4][16];
-uint16_t MODULE_GREEN[4][16];
+static uint16_t MODULE_RED[4][16];
+static uint16_t MODULE_GREEN[4][16];
 
+uint16_t MODULE_RED_TEMP[4][16];
+uint16_t MODULE_GREEN_TEMP[4][16];
 
-void output_on_module(uint8_t module)
+void led_copy_data(void)
 {
-	uint8_t counter,counter2;
-	LED_SELECT_PORT |= (1<<module);
-//	LED_CONTROL_PORT |= (1<<LED_BRIGHT);
+	memcpy(&MODULE_RED, &MODULE_RED_TEMP, sizeof(MODULE_RED_TEMP));
+	memcpy(&MODULE_GREEN, &MODULE_GREEN_TEMP, sizeof(MODULE_GREEN_TEMP));
+}
 
-	for(counter2 = 0;counter2 < 16;counter2++)
+void led_update(void)
+{
+	uint8_t counter,counter2,i;
+	
+	/* reset */
+	LED_CONTROL_PORT |= (1<<LED_RESET);
+	LED_CONTROL_PORT &= ~(1<<LED_RESET);
+
+	for(i=0;i<4;i++)
 	{
-//		LED_CONTROL_PORT |=  (1<<LED_BRIGHT);
-		for(counter = 0; counter < 16; counter++)
+		LED_SELECT_PORT |= (1<<i);
+		for(counter2 = 0;counter2 < 16;counter2++)
 		{
-			if((MODULE_RED[module][counter2]>>counter)&1)
-				LED_CONTROL_PORT |= (1<<LED_RED);
-			else
-				LED_CONTROL_PORT &= ~(1<<LED_RED);
-			if((MODULE_GREEN[module][counter2]>>counter)&1)
-				LED_CONTROL_PORT |= (1<<LED_GREEN);
-			else
-				LED_CONTROL_PORT &= ~(1<<LED_GREEN);
-			LED_CONTROL_PORT |= (1<<LED_CLOCK);
-			LED_CONTROL_PORT &= ~(1<<LED_CLOCK);
+	//		LED_CONTROL_PORT |= (1<<LED_BRIGHT);
+	//		LED_CONTROL_PORT |=  (1<<LED_BRIGHT);
+			for(counter = 0; counter < 16; counter++)
+			{
+				if((MODULE_RED[i][counter2]>>counter)&1)
+					LED_CONTROL_PORT |= (1<<LED_RED);
+				else
+					LED_CONTROL_PORT &= ~(1<<LED_RED);
+				if((MODULE_GREEN[i][counter2]>>counter)&1)
+					LED_CONTROL_PORT |= (1<<LED_GREEN);
+				else
+					LED_CONTROL_PORT &= ~(1<<LED_GREEN);
+				LED_CONTROL_PORT |= (1<<LED_CLOCK);
+				LED_CONTROL_PORT &= ~(1<<LED_CLOCK);
+			}
+	//		LED_CONTROL_PORT &= ~(1<<LED_BRIGHT);
 		}
-		LED_CONTROL_PORT |= (1<<LED_BRIGHT);
-		LED_CONTROL_PORT &= ~(1<<LED_BRIGHT);
-//		_delay_us(100);
+		LED_SELECT_PORT &= ~(1<<i);
 	}
-	LED_SELECT_PORT &= ~(1<<module);
 }
 
 void led_init(void)
@@ -82,6 +95,9 @@ void led_init(void)
 	/* Array initialisieren */
 	memset(&MODULE_RED,0,sizeof(MODULE_RED));
 	memset(&MODULE_RED,0,sizeof(MODULE_GREEN));
+	
+	memset(&MODULE_RED,0,sizeof(MODULE_RED_TEMP));
+	memset(&MODULE_RED,0,sizeof(MODULE_GREEN_TEMP));
 
 	LED_SELECT_DDRD |= (1<<LED_SELECT_1) | 
 		(1<<LED_SELECT_2) | 
@@ -92,38 +108,22 @@ void led_init(void)
 		(1<<LED_BRIGHT) |
 		(1<<LED_CLOCK) |
 		(1<<LED_GREEN) |
-		(1<<LED_RED) ;
-	//	(1<<LED_BRTWRT) | 
-	//	(1<<LED_BRTCLK);
-	
+		(1<<LED_RED) |
+		(1<<LED_BRTWRT) | 
+		(1<<LED_BRTCLK);
+
 	LED_SELECT_PORT = 0;
 	LED_CONTROL_PORT = 0;
+	LED_CONTROL_PORT |= 1<<LED_BRTWRT;
 }
 
 void led_runner(void)
 {
-	uint8_t counter,counter2;
 
 
-	/* reset */
-	LED_CONTROL_PORT |= (1<<LED_RESET);
-	LED_CONTROL_PORT &= ~(1<<LED_RESET);
+	led_update();
 	
-//	for(counter=0;counter<16;counter++)
-//	{
-//		for(counter2=0;counter2<4;counter2++)
-//		{
-//			//MODULE_RED[counter2][counter]++;
-//			MODULE_GREEN[counter2][counter]++;
-//		}
-//	}
-
-	output_on_module(LED_SELECT_1);
-	output_on_module(LED_SELECT_2);
-	output_on_module(LED_SELECT_3);
-	output_on_module(LED_SELECT_4);
-	//LED_CONTROL_PORT |= (1<<LED_RESET);
-//		LED_CONTROL_PORT &= ~(1<<LED_RESET);
-//		}
-//
+	LED_CONTROL_PORT |= (1<<LED_CLOCK);
+	LED_CONTROL_PORT &= ~(1<<LED_CLOCK);
+	
 }

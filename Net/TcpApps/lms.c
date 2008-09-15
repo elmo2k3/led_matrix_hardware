@@ -42,7 +42,7 @@ void LMSCall(	uint8_t* pBuffer,
 	if(uip_connected())
 	{
 		pSocket->byte_counter = 0;
-		led_ptr = &MODULE_RED;
+		led_ptr = &MODULE_RED_TEMP;
 		pSocket->toggler = 0;
 	}
 	else if(uip_newdata() || uip_acked())
@@ -61,11 +61,12 @@ void LMSCall(	uint8_t* pBuffer,
 				pSocket->toggler = 0;
 			}
 			if(++pSocket->byte_counter == 128)
-				led_ptr = &MODULE_GREEN;
+				led_ptr = &MODULE_GREEN_TEMP;
 			else if(pSocket->byte_counter == 256)
 			{
+				led_copy_data();
 //				uip_close();
-				led_ptr = &MODULE_RED;
+				led_ptr = &MODULE_RED_TEMP;
 				pSocket->byte_counter = 0;
 			}
 		}

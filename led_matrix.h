@@ -26,10 +26,12 @@
  *
  */
 
+extern void led_update(void);
 extern void led_runner(void);
-
 extern void led_init(void);
-extern uint16_t MODULE_RED[4][16];
-extern uint16_t MODULE_GREEN[4][16];
+extern void led_copy_data(void);
+
+extern uint16_t MODULE_RED_TEMP[4][16];
+extern uint16_t MODULE_GREEN_TEMP[4][16];
 
 #endif
